@@ -1,10 +1,10 @@
 package com.sparta.catubebatch.service;
 
+import com.sparta.catubebatch.entity.AdStat;
 import com.sparta.catubebatch.entity.Video;
+import com.sparta.catubebatch.entity.VideoAd;
 import com.sparta.catubebatch.entity.VideoStat;
-import com.sparta.catubebatch.repository.VideoRepository;
-import com.sparta.catubebatch.repository.VideoStatRepository;
-import com.sparta.catubebatch.repository.ViewsRepository;
+import com.sparta.catubebatch.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +19,8 @@ public class StatBatchService {
     public final VideoRepository videoRepository;
     public final ViewsRepository viewsRepository;
     public final VideoStatRepository videoStatRepository;
+    private final AdViewsRepository adViewsRepository;
+    private final AdStatRepository adStatRepository;
 
     public LocalDate today = LocalDate.now().minusDays(1);
 
@@ -38,5 +40,18 @@ public class StatBatchService {
         }
         videoStatRepository.saveAll(vsToSave);
         videoRepository.saveAll(videoToSave);
+    }
+
+    public void saveAdViewCount() {
+        LocalDate today = LocalDate.now().minusDays(1);
+        List<Object[]> dailyAdList = adViewsRepository.countGroupedByVideoIdAndVideoAdId(today);
+        List<AdStat> adStatList = new ArrayList<>();
+        for (Object[] dailyAd : dailyAdList) {
+            VideoAd videoAd = (VideoAd) dailyAd[0];
+            int dailyAdCount = ((Long) dailyAd[1]).intValue();
+            AdStat adStat = AdStat.of(videoAd, today, dailyAdCount);
+            adStatList.add(adStat);
+        }
+        adStatRepository.saveAll(adStatList);
     }
 }

@@ -1,6 +1,5 @@
 package com.sparta.catubebatch.batch;
 
-import com.sparta.catubebatch.service.AdStatService;
 import com.sparta.catubebatch.service.BillBatchService;
 import com.sparta.catubebatch.service.StatBatchService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableBatchProcessing
 public class TaskletConfig {
     private final StatBatchService statBatchService;
-    private final AdStatService adStatService;
     private final BillBatchService billbatchService;
 
     @Bean
@@ -29,7 +27,7 @@ public class TaskletConfig {
     @Bean
     public Tasklet adStatTasklet() {
         return (contribution, chunkContext) -> {
-            adStatService.saveAdViewCount();
+            statBatchService.saveAdViewCount();
             return RepeatStatus.FINISHED;
         };
     }

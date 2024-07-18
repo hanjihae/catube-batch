@@ -142,7 +142,8 @@ public class BillBatchService {
                 .stream()
                 .collect(Collectors.toMap(
                         record -> ((VideoAd) record[0]).getVideoAdId(),
-                        record -> ((Number) record[1]).intValue()
+                        record -> ((Number) record[1]).intValue(),  // videoAdId가 같은 경우 viewCount끼리 더하기
+                        Integer::sum
                 ));
         List<VideoAd> videoAdList = videoAdRepository.findAll();
         List<VideoAd> videoAdToSave = new ArrayList<>();

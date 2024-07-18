@@ -17,8 +17,8 @@ public class SchedulerConfig {
     private final Job billJob;
     private final Job afterJob;
 
-//    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
-    @Scheduled(cron = "0 0 0 * * ?") // 매일 00시에 실행
+    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
+//    @Scheduled(cron = "0 0 0 * * ?") // 매일 00시에 실행
     public void performDailyJob() throws Exception {
         jobLauncher.run(statJob, new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
         jobLauncher.run(billJob, new JobParametersBuilder().addLong("time", System.currentTimeMillis() + 1).toJobParameters());
