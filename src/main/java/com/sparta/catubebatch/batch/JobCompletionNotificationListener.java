@@ -43,4 +43,5 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
             logger.info("Commit Count: {}", stepExecution.getCommitCount());
         });
     }
+
 }
