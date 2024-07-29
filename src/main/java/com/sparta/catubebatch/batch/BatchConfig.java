@@ -10,12 +10,12 @@ public class BatchConfig {
 
     @Bean(name = "batchTaskExecutor")
     public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("batchTaskExecutor-");
-        executor.initialize();
-        return executor;
+        ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+        taskExecutor.setCorePoolSize(2); // 기본 스레드 수
+        taskExecutor.setMaxPoolSize(10); // 최대 스레드 수
+        taskExecutor.setQueueCapacity(10); // 대기 큐 크기
+        taskExecutor.setThreadNamePrefix("Batch-Executor-");
+        taskExecutor.initialize();
+        return taskExecutor;
     }
 }

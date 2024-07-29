@@ -18,58 +18,80 @@ public class JobConfig {
     private final CustomJobListener listener;
 
     @Bean
-    public Job videoStatJob(Step videoStatStep) {
-        return new JobBuilder("videoStatJob", jobRepository)
+    public Job videoJob(Step videoStatStep, Step videoBillStep, Step videoDoneStep) {
+        return new JobBuilder("videoJob", jobRepository)
                 .preventRestart()
                 .listener(listener)
                 .start(videoStatStep)
+                .next(videoBillStep)
+                .next(videoDoneStep)
                 .build();
     }
 
     @Bean
-    public Job adStatJob(Step adStatStep) {
-        return new JobBuilder("adStatJob", jobRepository)
+    public Job adJob(Step adStatStep, Step adBillStep, Step adDoneStep) {
+        return new JobBuilder("adJob", jobRepository)
                 .preventRestart()
                 .listener(listener)
                 .start(adStatStep)
+                .next(adBillStep)
+                .next(adDoneStep)
                 .build();
     }
 
-    @Bean
-    public Job videoBillJob(Step videoBillStep) {
-        return new JobBuilder("videoBillJob", jobRepository)
-                .preventRestart()
-                .listener(listener)
-                .start(videoBillStep)
-                .build();
-    }
-
-    @Bean
-    public Job adBillJob(Step adBillStep) {
-        return new JobBuilder("adBillJob", jobRepository)
-                .preventRestart()
-                .listener(listener)
-                .start(adBillStep)
-                .build();
-    }
-
-    @Bean
-    public Job videoAfterJob(Step videoDoneStep) {
-        return new JobBuilder("videoAfterJob", jobRepository)
-                .preventRestart()
-                .listener(listener)
-                .start(videoDoneStep)
-                .build();
-    }
-
-    @Bean
-    public Job adAfterJob(Step adDoneStep) {
-        return new JobBuilder("adAfterJob", jobRepository)
-                .preventRestart()
-                .listener(listener)
-                .start(adDoneStep)
-                .build();
-    }
+//    @Bean
+//    public Job videoStatJob(Step videoStatStep) {
+//        return new JobBuilder("videoStatJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(videoStatStep)
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job adStatJob(Step adStatStep) {
+//        return new JobBuilder("adStatJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(adStatStep)
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job videoBillJob(Step videoBillStep) {
+//        return new JobBuilder("videoBillJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(videoBillStep)
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job adBillJob(Step adBillStep) {
+//        return new JobBuilder("adBillJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(adBillStep)
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job videoAfterJob(Step videoDoneStep) {
+//        return new JobBuilder("videoAfterJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(videoDoneStep)
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job adAfterJob(Step adDoneStep) {
+//        return new JobBuilder("adAfterJob", jobRepository)
+//                .preventRestart()
+//                .listener(listener)
+//                .start(adDoneStep)
+//                .build();
+//    }
 
     // 병렬처리 전
     @Bean
