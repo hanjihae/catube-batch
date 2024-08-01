@@ -11,9 +11,9 @@ public class BatchConfig {
     @Bean(name = "batchTaskExecutor")
     public TaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(2); // 기본 스레드 수
+        taskExecutor.setCorePoolSize(4); // 기본 스레드 수
         taskExecutor.setMaxPoolSize(10); // 최대 스레드 수
-        taskExecutor.setQueueCapacity(10); // 대기 큐 크기
+        taskExecutor.setQueueCapacity(50); // 대기 큐 크기
         taskExecutor.setThreadNamePrefix("Batch-Executor-");
         taskExecutor.initialize();
         return taskExecutor;

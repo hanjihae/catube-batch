@@ -9,8 +9,7 @@
 //import org.springframework.scheduling.annotation.EnableScheduling;
 //import org.springframework.scheduling.annotation.Scheduled;
 //
-//import java.util.Arrays;
-//import java.util.List;
+//import java.util.Objects;
 //import java.util.UUID;
 //
 //@Configuration
@@ -18,14 +17,17 @@
 //public class SchedulerConfig2 {   // 순차
 //
 //    private final JobLauncher jobLauncher;
-//    private final List<Job> sequentialJobs;
+//    private final Job statJob;
+//    private final Job billJob;
+//    private final Job afterJob;
+//
 //
 //    public SchedulerConfig2(JobLauncher jobLauncher,
 //                            Job statJob, Job billJob, Job afterJob) {
 //        this.jobLauncher = jobLauncher;
-//
-//        // 순차 작업 목록
-//        this.sequentialJobs = Arrays.asList(statJob, billJob, afterJob);
+//        this.statJob = statJob;
+//        this.billJob = billJob;
+//        this.afterJob = afterJob;
 //    }
 //
 //    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
@@ -33,22 +35,22 @@
 //        try {
 //            // 순차 처리
 //            System.out.println("\n[순차] 잡 실행 시작");
-//            runSequentialJobs();
+//            JobExecution sequentialExecution1 = runJob(statJob, "순차");
+//            Objects.requireNonNull(sequentialExecution1).getJobParameters();
+//            JobExecution sequentialExecution2 = runJob(billJob, "순차");
+//            Objects.requireNonNull(sequentialExecution2).getJobParameters();
+//            JobExecution sequentialExecution3 = runJob(afterJob, "순차");
+//            Objects.requireNonNull(sequentialExecution2).getJobParameters();
+//
+//            while (sequentialExecution1.isRunning()|| sequentialExecution2.isRunning() || sequentialExecution3.isRunning()) {
+//                Thread.sleep(100);
+//            }
 //
 //            // 요약 출력
 //            printSeqSummary();
 //
 //        } catch (Exception e) {
 //            e.printStackTrace();
-//        }
-//    }
-//
-//    private void runSequentialJobs() throws InterruptedException {
-//        for (Job job : sequentialJobs) {
-//            JobExecution execution = runJob(job, "순차");
-//            while (execution.isRunning()) {
-//                Thread.sleep(100);
-//            }
 //        }
 //    }
 //
@@ -72,9 +74,9 @@
 //    }
 //
 //    private void printSeqSummary() {
-//        if (CustomJobListener.sequentialJobCount > 0) {
+//        if (CustomJobListener2.sequentialJobCount > 0) {
 //            System.out.println("\n=== 순차 처리 Summary ===");
-//            System.out.println("순차 총 소요시간: " + CustomJobListener.sequentialTotalTime + " ms");
+//            System.out.println("순차 총 소요시간: " + CustomJobListener2.sequentialTotalTime + " ms");
 //        } else {
 //            System.out.println("\n순차 처리 작업이 수행되지 않았습니다.");
 //        }

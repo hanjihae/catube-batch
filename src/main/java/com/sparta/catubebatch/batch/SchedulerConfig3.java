@@ -11,6 +11,7 @@
 //import org.springframework.scheduling.annotation.EnableScheduling;
 //import org.springframework.scheduling.annotation.Scheduled;
 //
+//import java.util.ArrayList;
 //import java.util.Arrays;
 //import java.util.List;
 //import java.util.UUID;
@@ -22,26 +23,21 @@
 //
 //    private final JobLauncher jobLauncher;
 //    private final List<Job> sequentialJobs;
-//    private final List<List<Job>> parallelJobsStages;
+//    private final Job videoJob;
+//    private final Job adJob;
 //    private final TaskExecutor taskExecutor;
 //
 //    public SchedulerConfig3(JobLauncher jobLauncher,
 //                            Job statJob, Job billJob, Job afterJob,
-//                            Job videoStatJob, Job adStatJob, Job videoBillJob, Job adBillJob,
-//                            Job videoAfterJob, Job adAfterJob,
+//                            Job videoJob, Job adJob,
 //                            @Qualifier("batchTaskExecutor") TaskExecutor taskExecutor) {
 //        this.jobLauncher = jobLauncher;
+//        this.videoJob = videoJob;
+//        this.adJob = adJob;
 //        this.taskExecutor = taskExecutor;
 //
 //        // 순차 작업 목록
 //        this.sequentialJobs = Arrays.asList(statJob, billJob, afterJob);
-//
-//        // 병렬 작업을 단계별로 그룹화하여 관리
-//        this.parallelJobsStages = Arrays.asList(
-//                Arrays.asList(videoStatJob, adStatJob),
-//                Arrays.asList(videoBillJob, adBillJob),
-//                Arrays.asList(videoAfterJob, adAfterJob)
-//        );
 //    }
 //
 //    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
@@ -53,7 +49,20 @@
 //
 //            // 병렬 처리
 //            System.out.println("[병렬] 잡 실행 시작\n");
-//            runParallelJobs();
+//            List<Runnable> tasks = new ArrayList<>();
+//            tasks.add(() -> runJob(videoJob, "병렬"));
+//            tasks.add(() -> runJob(adJob, "병렬"));
+//
+//            CountDownLatch latch = new CountDownLatch(tasks.size());
+//
+//            for (Runnable task : tasks) {
+//                taskExecutor.execute(() -> {
+//                    task.run();
+//                    latch.countDown();
+//                });
+//            }
+//
+//            latch.await();
 //
 //            // 요약 출력
 //            printSummary();
@@ -66,28 +75,12 @@
 //    private void runSequentialJobs() throws InterruptedException {
 //        for (Job job : sequentialJobs) {
 //            JobExecution execution = runJob(job, "순차");
-//            while (execution.isRunning()) {
-//                Thread.sleep(100);
+//            while (execution != null && execution.isRunning()) {
+//                Thread.sleep(100); // 필요시 삭제
 //            }
 //        }
 //    }
 //
-//    private void runParallelJobs() throws InterruptedException {
-//        for (List<Job> jobStage : parallelJobsStages) {
-//            runJobStage(jobStage, "병렬");
-//        }
-//    }
-//
-//    private void runJobStage(List<Job> jobs, String mode) throws InterruptedException {
-//        CountDownLatch latch = new CountDownLatch(jobs.size());
-//        for (Job job : jobs) {
-//            taskExecutor.execute(() -> {
-//                runJob(job, mode);
-//                latch.countDown();
-//            });
-//        }
-//        latch.await();
-//    }
 //
 //    private JobExecution runJob(Job job, String mode) {
 //        try {
@@ -97,12 +90,9 @@
 //                    .toJobParameters();
 //
 //            JobExecution jobExecution = jobLauncher.run(job, jobParameters);
-//            while (jobExecution.isRunning()) {
-//                Thread.sleep(100);
-//            }
 //            return jobExecution;
 //        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
-//                 JobParametersInvalidException | InterruptedException e) {
+//                 JobParametersInvalidException e) {
 //            e.printStackTrace();
 //            return null;
 //        }
@@ -110,14 +100,13 @@
 //
 //    private void printSummary() {
 //        System.out.println("\n=== 배치 Job 병렬처리 테스트 Summary ===");
-//        if (CustomJobListener.sequentialJobCount > 0) {
-//            System.out.println("순차 총 소요시간: " + CustomJobListener.sequentialTotalTime + " ms");
+//        if (CustomJobListener2.sequentialJobCount > 0) {
+//            System.out.println("순차 총 소요시간: " + CustomJobListener2.sequentialTotalTime + " ms");
 //        }
-//        if (CustomJobListener.parallelStartTime > 0 && CustomJobListener.parallelEndTime > 0) {
-//            long parallelTotalTime = CustomJobListener.parallelEndTime - CustomJobListener.parallelStartTime;
+//        if (CustomJobListener2.parallelStartTime > 0 && CustomJobListener2.parallelEndTime > 0) {
+//            long parallelTotalTime = CustomJobListener2.parallelEndTime - CustomJobListener2.parallelStartTime;
 //            System.out.println("병렬 총 소요시간: " + parallelTotalTime + " ms");
 //        }
-//        System.out.println("순차와 병렬의 총 소요시간 차이: " + (CustomJobListener.parallelEndTime - CustomJobListener.parallelStartTime - CustomJobListener.sequentialTotalTime) * (-1) + " ms");
+//        System.out.println("순차와 병렬의 총 소요시간 차이: " + (CustomJobListener2.parallelEndTime - CustomJobListener2.parallelStartTime - CustomJobListener2.sequentialTotalTime) * (-1) + " ms");
 //    }
-//
 //}

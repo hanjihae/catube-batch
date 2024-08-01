@@ -14,22 +14,6 @@ public interface VideoStatRepository extends JpaRepository<VideoStat, Long> {
 
     @Query("SELECT v.video, SUM(v.dailyViewCount) cnt FROM VideoStat v " +
             "WHERE v.createdAt = :today " +
-            "GROUP BY v.video ORDER BY cnt DESC LIMIT 5")
+            "GROUP BY v.video")
     List<Object[]> findTodayVideoViewCount(@Param("today")LocalDate today);
-
-    @Query("SELECT v.video, SUM(v.dailyPlayTime) pt FROM VideoStat v " +
-            "WHERE v.createdAt = :today " +
-            "GROUP BY v.video ORDER BY pt DESC LIMIT 5")
-    List<Object[]> findTodayVideoPlayTime(@Param("today")LocalDate today);
-
-    @Query("SELECT v.video, SUM(v.dailyViewCount) cnt FROM VideoStat v " +
-            "WHERE v.createdAt >= :start AND v.createdAt < :end " +
-            "GROUP BY v.video ORDER BY cnt DESC LIMIT 5")
-    List<Object[]> findVideoViewCount(@Param("start") LocalDate start, @Param("end") LocalDate end);
-
-    @Query("SELECT v.video, SUM(v.dailyPlayTime) pt FROM VideoStat v " +
-            "WHERE v.createdAt >= :start AND v.createdAt < :end " +
-            "GROUP BY v.video ORDER BY pt DESC LIMIT 5")
-    List<Object[]> findVideoPlayTime(@Param("start") LocalDate start, @Param("end") LocalDate end);
-
 }

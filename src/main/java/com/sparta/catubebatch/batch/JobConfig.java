@@ -15,12 +15,13 @@ import org.springframework.context.annotation.Configuration;
 @EnableBatchProcessing
 public class JobConfig {
     private final JobRepository jobRepository;
-    private final CustomJobListener listener;
+    private final CustomJobListener2 listener;
 
     @Bean
     public Job videoJob(Step videoStatStep, Step videoBillStep, Step videoDoneStep) {
         return new JobBuilder("videoJob", jobRepository)
-                .preventRestart()
+                .incrementer(new RunIdIncrementer())
+//                .preventRestart()
                 .listener(listener)
                 .start(videoStatStep)
                 .next(videoBillStep)
@@ -31,7 +32,8 @@ public class JobConfig {
     @Bean
     public Job adJob(Step adStatStep, Step adBillStep, Step adDoneStep) {
         return new JobBuilder("adJob", jobRepository)
-                .preventRestart()
+                .incrementer(new RunIdIncrementer())
+//                .preventRestart()
                 .listener(listener)
                 .start(adStatStep)
                 .next(adBillStep)
@@ -39,88 +41,35 @@ public class JobConfig {
                 .build();
     }
 
+    // 병렬처리 전
 //    @Bean
-//    public Job videoStatJob(Step videoStatStep) {
-//        return new JobBuilder("videoStatJob", jobRepository)
-//                .preventRestart()
+//    public Job statJob(Step videoStatStep, Step adStatStep) {
+//        return new JobBuilder("statJob", jobRepository)
+//                .incrementer(new RunIdIncrementer())
 //                .listener(listener)
 //                .start(videoStatStep)
+//                .next(adStatStep)
 //                .build();
 //    }
 //
 //    @Bean
-//    public Job adStatJob(Step adStatStep) {
-//        return new JobBuilder("adStatJob", jobRepository)
-//                .preventRestart()
-//                .listener(listener)
-//                .start(adStatStep)
-//                .build();
-//    }
-//
-//    @Bean
-//    public Job videoBillJob(Step videoBillStep) {
-//        return new JobBuilder("videoBillJob", jobRepository)
-//                .preventRestart()
+//    public Job billJob(Step videoBillStep, Step adBillStep) {
+//        return new JobBuilder("billJob", jobRepository)
+//                .incrementer(new RunIdIncrementer())
 //                .listener(listener)
 //                .start(videoBillStep)
+//                .next(adBillStep)
 //                .build();
 //    }
 //
 //    @Bean
-//    public Job adBillJob(Step adBillStep) {
-//        return new JobBuilder("adBillJob", jobRepository)
-//                .preventRestart()
-//                .listener(listener)
-//                .start(adBillStep)
-//                .build();
-//    }
-//
-//    @Bean
-//    public Job videoAfterJob(Step videoDoneStep) {
-//        return new JobBuilder("videoAfterJob", jobRepository)
-//                .preventRestart()
+//    public Job afterJob(Step videoDoneStep, Step adDoneStep) {
+//        return new JobBuilder("afterJob", jobRepository)
+//                .incrementer(new RunIdIncrementer())
 //                .listener(listener)
 //                .start(videoDoneStep)
-//                .build();
-//    }
-//
-//    @Bean
-//    public Job adAfterJob(Step adDoneStep) {
-//        return new JobBuilder("adAfterJob", jobRepository)
-//                .preventRestart()
-//                .listener(listener)
-//                .start(adDoneStep)
+//                .next(adDoneStep)
 //                .build();
 //    }
 
-    // 병렬처리 전
-    @Bean
-    public Job statJob(Step videoStatStep, Step adStatStep) {
-        return new JobBuilder("statJob", jobRepository)
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .start(videoStatStep)
-                .next(adStatStep)
-                .build();
-    }
-
-    @Bean
-    public Job billJob(Step videoBillStep, Step adBillStep) {
-        return new JobBuilder("billJob", jobRepository)
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .start(videoBillStep)
-                .next(adBillStep)
-                .build();
-    }
-
-    @Bean
-    public Job afterJob(Step videoDoneStep, Step adDoneStep) {
-        return new JobBuilder("afterJob", jobRepository)
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .start(videoDoneStep)
-                .next(adDoneStep)
-                .build();
-    }
 }

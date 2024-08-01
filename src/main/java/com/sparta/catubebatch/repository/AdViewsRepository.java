@@ -1,5 +1,6 @@
 package com.sparta.catubebatch.repository;
 
+import com.sparta.catubebatch.dto.AdStatData;
 import com.sparta.catubebatch.entity.AdViews;
 import com.sparta.catubebatch.entity.VideoAd;
 import org.springframework.data.jpa.repository.JpaRepository;

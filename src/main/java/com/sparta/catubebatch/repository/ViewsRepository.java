@@ -1,5 +1,6 @@
 package com.sparta.catubebatch.repository;
 
+import com.sparta.catubebatch.dto.VideoStatData;
 import com.sparta.catubebatch.entity.Views;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
