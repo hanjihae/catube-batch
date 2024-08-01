@@ -35,7 +35,8 @@ public class SchedulerConfig {
     }
 
 
-    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
+//    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
+    @Scheduled(cron = "0 0 0 * * *")
     public void runJobs() {
         try {
             System.out.println("[병렬] 잡 실행 시작");

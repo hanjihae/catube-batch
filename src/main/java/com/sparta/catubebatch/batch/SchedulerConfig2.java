@@ -30,7 +30,8 @@
 //        this.afterJob = afterJob;
 //    }
 //
-//    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
+////    @Scheduled(cron = "*/5 * * * * *") // 매 5초마다 실행
+//    @Scheduled(cron = "0 0 0 * * *")
 //    public void runJobs() {
 //        try {
 //            // 순차 처리
